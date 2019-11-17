@@ -1,0 +1,16 @@
+### Available arguments listed here:
+
+-c '{"Args":["Initialize"]}'
+
+-c '{"Args":["createTaskMatching", "work", "[[1,2,3],[4,5,6],[7,8,9]]"]}'
+
+-c '{"Args":["readTaskMatching", "work"]}'
+
+-c '{"Args":["readTaskMatching", "p1"]}'
+
+-c '{"Args":["calculateTaskMatching", "p1"]}'
+
+### type 'docker exec -it cli bash' in a terminal.
+### Take the following code and change the ending "-c etc" to the argument of your choosing.
+
+peer chaincode invoke -o orderer.example.com:7050 --tls true --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C taskmatch-channel -n taskmatching -c '{"Args":["calculateTaskMatching", "p1"]}'
