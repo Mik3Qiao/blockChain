@@ -145,9 +145,9 @@ func (t *SimpleChaincode) calculateTaskMatching(stub shim.ChaincodeStubInterface
 	sol, runtime = Assign(matrix, args[0])
 
 	// var runtime float64 = calcRuntime(matrix, sol)
-	if args[0] == "p3" {
-		runtime = calcRuntime(matrix, sol)
-	}
+	// if args[0] == "p3" {
+	// 	runtime = calcRuntime(matrix, sol)
+	// }
 
 	//change Peer info
 	PeerasBytes, _ := stub.GetState(args[0])
@@ -187,7 +187,8 @@ func Assign(matrix [][]int, peer string) ([]int, int) {
 		}
 		timeCost = time
 	} else if peer == "p3" {
-		sol = simulatedAnnealing(matrix)
+		// sol = simulatedAnnealing(matrix)
+		sol = make([]int, len(matrix))
 		timeCost = -1
 	}
 

@@ -11,7 +11,7 @@ PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrga
 PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
 PEER0_ORG3_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/peers/peer0.org3.example.com/tls/ca.crt
 
-CC_VERSION=4.034
+CC_VERSION=4.042
 
 # verify the result of the end-to-end test
 verifyResult() {
@@ -290,7 +290,7 @@ chaincodeInvoke() {
   ## Creating a taskmatching to be solved on the network:
   set -x
   echo "Creating a taskmatching:"
-  peer chaincode invoke -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n taskmatching -c '{"Args":["createTaskMatching", "work", "[[1,2,3],[4,5,6],[7,8,9]]"]}'
+  peer chaincode invoke -o orderer.example.com:7050 --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA -C $CHANNEL_NAME -n taskmatching -c '{"Args":["createTaskMatching", "work", "[[1,2,3],[4,5,6],[7,8,9],[10,11,12]]"]}'
   res=$?
   set +x
 
