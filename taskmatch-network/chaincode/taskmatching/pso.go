@@ -391,8 +391,21 @@ func helper(inputMatrix [][]float64, result []indexValuePair, timespent []float6
 	return helper(tempMatrix, result, timespent, input)
 }
 
+func deepcopy(inputMatrix [][]float64) [][]float64 {
+	result := make([][]float64, len(inputMatrix))
+	for i := range result {
+		result[i] = make([]float64, len(inputMatrix[i]))
+	}
+	for i := 0; i < len(inputMatrix); i++ {
+		for j := 0; j < len(inputMatrix[i]); j++ {
+			result[i][j] = inputMatrix[i][j]
+		}
+	}
+	return result
+}
+
 func main() {
-	var newproblem = Problem{10, 0, 3} // 512 tasks and 16 resources
+	var newproblem = Problem{100, 0, 10} // 512 tasks and 16 resources
 	// ETC := [][]float64{
 	// 	{1.2, 1.3, 1.4},
 	// 	{7.2, 6.9, 10.2},
@@ -404,30 +417,39 @@ func main() {
 	// }
 	// tasks := len(ETC)
 	// resources := len(ETC[0])
-	ETC := ETCgenerator(10, 3, "low", "low")
-	for i := 0; i < len(ETC); i++ {
-		fmt.Printf("%.2f\n", ETC[i])
-	}
-	startminmax := time.Now()
-	var emptyArr []indexValuePair
-	var emptyArr1 []float64
-	_, timespent := helper(ETC, emptyArr, emptyArr1, "MIN-MIN-TASK")
-	timeCost := float64(-1)
-	for i := 0; i < len(timespent); i++ {
-		if timespent[i] > timeCost {
-			timeCost = timespent[i]
-		}
-	}
-	elapsedminmax := time.Since(startminmax)
-	fmt.Printf("%s%.2f\n", "The time cost by minmin task driven approach is: ", timeCost)
-	fmt.Printf("time took by by minmin: %s\n", elapsedminmax)
+	ETC := ETCgenerator(100, 10, "low", "low")
+	ETC1 := deepcopy(ETC)
+	// ETC2 := deepcopy(ETC)
+	// for i := 0; i < len(ETC); i++ {
+	// 	fmt.Printf("%.2f\n", ETC[i])
+	// }
+
+	// startminmax := time.Now()
+	// var emptyArr []indexValuePair
+	// var emptyArr1 []float64
+	// _, timespent := helper(ETC2, emptyArr, emptyArr1, "MIN-MIN-TASK")
+	// timeCost := float64(-1)
+	// for i := 0; i < len(timespent); i++ {
+	// 	if timespent[i] > timeCost {
+	// 		timeCost = timespent[i]
+	// 	}
+	// }
+	// elapsedminmax := time.Since(startminmax)
+	// fmt.Printf("%s%.2f\n", "The time cost by minmin task driven approach is: ", timeCost)
+	// fmt.Printf("time took by by minmin: %s\n", elapsedminmax)
+
+	// ------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------
+	// ------------------------------------------------------------------------------------------------------------
 
 	startpso := time.Now()
-
-	gbest, _ := pso(newproblem, ETC, 500, 50, 1.796180, 1.796180, 0.729844, 0.995)
+	gbest, _ := pso(newproblem, ETC1, 500, 50, 1.796180, 1.796180, 0.729844, 0.995)
 	fmt.Printf("%s%.2f\n", "Cost token by pso is: ", gbest.cost)
 	elapsedpso := time.Since(startpso)
-	fmt.Printf("time took by pso: %s\n", elapsedpso)
+	fmt.Printf("time took by pso: %s\n\n\n", elapsedpso)
 	// sol := generateRandomArr(0, 3, 4)
 	// fmt.Print(sol)
+
 }
