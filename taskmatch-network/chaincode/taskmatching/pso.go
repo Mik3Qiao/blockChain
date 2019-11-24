@@ -4,12 +4,8 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
-	"strings"
 	"time"
 )
-
-// Vector : This is the position inside a velocity or a position struct
-// type Vector []float64
 
 // Position : this contains the currrent position and the point's fitness value
 type Position struct {
@@ -32,12 +28,6 @@ type Particle struct {
 	pBest    []float64
 	cost     float64
 	bestCost float64
-}
-
-type indexValuePair struct {
-	row   int
-	col   int
-	value float64
 }
 
 func multiplyNumAndArr(factor float64, arrIn []float64) []float64 {
@@ -228,169 +218,6 @@ func pso(inputProblem Problem, inputMatrix [][]float64, maxIter int, popSize int
 	return gBest, pop
 }
 
-func getminIndicesByRow(inputMatrix [][]float64) []indexValuePair {
-	result := make([]indexValuePair, len(inputMatrix))
-	for i := 0; i < len(inputMatrix); i++ {
-		var minofRow float64 = math.MaxInt16
-		for j := 0; j < len(inputMatrix[i]); j++ {
-			if inputMatrix[i][j] < minofRow {
-				minofRow = inputMatrix[i][j]
-				result[i].row = i
-				result[i].col = j
-				result[i].value = minofRow
-			}
-		}
-	}
-	return result
-}
-
-func getmaxIndicesByRow(inputMatrix [][]float64) []indexValuePair {
-	result := make([]indexValuePair, len(inputMatrix))
-	for i := 0; i < len(inputMatrix); i++ {
-		var maxofRow float64 = -1
-		for j := 0; j < len(inputMatrix[i]); j++ {
-			if inputMatrix[i][j] > maxofRow {
-				maxofRow = inputMatrix[i][j]
-				result[i].row = i
-				result[i].col = j
-				result[i].value = maxofRow
-			}
-		}
-	}
-	return result
-}
-func getmaxIndicesByCol(inputMatrix [][]float64) []indexValuePair {
-	result := make([]indexValuePair, len(inputMatrix[0]))
-	for j := 0; j < len(inputMatrix[0]); j++ {
-		var maxofCol float64 = -1
-		for i := 0; i < len(inputMatrix); i++ {
-			if inputMatrix[i][j] > maxofCol {
-				maxofCol = inputMatrix[i][j]
-				result[j].row = i
-				result[j].col = j
-				result[j].value = maxofCol
-			}
-		}
-	}
-	return result
-}
-
-func getminIndicesByCol(inputMatrix [][]float64) []indexValuePair {
-
-	result := make([]indexValuePair, len(inputMatrix[0]))
-	for j := 0; j < len(inputMatrix[0]); j++ {
-		var minofCol float64 = math.MaxInt16
-		for i := 0; i < len(inputMatrix); i++ {
-			if inputMatrix[i][j] < minofCol {
-				minofCol = inputMatrix[i][j]
-				result[j].row = i
-				result[j].col = j
-				result[j].value = minofCol
-			}
-		}
-	}
-	return result
-}
-
-func getMinIndexValuePair(inputMatrix []indexValuePair) indexValuePair {
-	var min float64 = math.MaxInt16
-	var minPair indexValuePair
-	for i := 0; i < len(inputMatrix); i++ {
-		if inputMatrix[i].value < min {
-			min = inputMatrix[i].value
-			minPair = inputMatrix[i]
-		}
-	}
-	return minPair
-}
-
-func getMaxIndexValuePair(inputMatrix []indexValuePair) indexValuePair {
-	var max float64 = -1
-	var maxPair indexValuePair
-	for i := 0; i < len(inputMatrix); i++ {
-		if inputMatrix[i].value > max {
-			max = inputMatrix[i].value
-			maxPair = inputMatrix[i]
-		}
-	}
-	return maxPair
-}
-
-func shrinkMatrixRow(inputMatrix [][]float64, rowRemoved int) [][]float64 {
-	result := make([][]float64, len(inputMatrix)-1)
-	for c := range result {
-		result[c] = make([]float64, len(inputMatrix[c]))
-	}
-	if len(inputMatrix) == 1 {
-		return inputMatrix
-	}
-
-	newRow := 0
-	for OriRow := 0; OriRow < len(inputMatrix); OriRow++ {
-		if OriRow != rowRemoved {
-			result[newRow] = inputMatrix[OriRow]
-			newRow++
-		}
-	}
-	return result
-}
-
-func helper(inputMatrix [][]float64, result []indexValuePair, timespent []float64, input string) ([]indexValuePair, []float64) {
-	if len(inputMatrix) == 1 {
-		var incides []indexValuePair
-		inputArr := strings.Split(input, "-")
-
-		if inputArr[0] == "MIN" && inputArr[2] == "TASK" {
-			incides = getminIndicesByRow(inputMatrix)
-		} else if inputArr[0] == "MAX" && inputArr[2] == "TASK" {
-			incides = getmaxIndicesByRow(inputMatrix)
-		} else if inputArr[0] == "MIN" && inputArr[2] == "RESOURCE" {
-			incides = getminIndicesByCol(inputMatrix)
-		} else if inputArr[0] == "MAX" && inputArr[2] == "RESOURCE" {
-			incides = getmaxIndicesByCol(inputMatrix)
-		}
-
-		var valuePair indexValuePair
-		if inputArr[1] == "MIN" {
-			valuePair = getMinIndexValuePair(incides)
-		} else {
-			valuePair = getMaxIndexValuePair(incides)
-		}
-
-		result = append(result, valuePair)
-		timespent = append(timespent, valuePair.value)
-		return result, timespent
-	}
-
-	var incides []indexValuePair
-	inputArr := strings.Split(input, "-")
-
-	if inputArr[0] == "MIN" && inputArr[2] == "TASK" {
-		incides = getminIndicesByRow(inputMatrix)
-	} else if inputArr[0] == "MAX" && inputArr[2] == "TASK" {
-		incides = getmaxIndicesByRow(inputMatrix)
-	} else if inputArr[0] == "MIN" && inputArr[2] == "RESOURCE" {
-		incides = getminIndicesByCol(inputMatrix)
-	} else if inputArr[0] == "MAX" && inputArr[2] == "RESOURCE" {
-		incides = getmaxIndicesByCol(inputMatrix)
-	}
-
-	var valuePair indexValuePair
-	if inputArr[1] == "MIN" {
-		valuePair = getMinIndexValuePair(incides)
-	} else {
-		valuePair = getMaxIndexValuePair(incides)
-	}
-
-	tempMatrix := shrinkMatrixRow(inputMatrix, valuePair.row)
-	for i := 0; i < len(tempMatrix); i++ {
-		tempMatrix[i][valuePair.col] += valuePair.value
-	}
-	result = append(result, valuePair)
-	timespent = append(timespent, valuePair.value)
-	return helper(tempMatrix, result, timespent, input)
-}
-
 func deepcopy(inputMatrix [][]float64) [][]float64 {
 	result := make([][]float64, len(inputMatrix))
 	for i := range result {
@@ -405,51 +232,14 @@ func deepcopy(inputMatrix [][]float64) [][]float64 {
 }
 
 func main() {
-	var newproblem = Problem{100, 0, 10} // 512 tasks and 16 resources
-	// ETC := [][]float64{
-	// 	{1.2, 1.3, 1.4},
-	// 	{7.2, 6.9, 10.2},
-	// 	{16.2, 3.9, 4.7},
-	// 	{1.2, 5.8, 12.0}}
-
-	// for i := 0; i < len(ETC); i++ {
-	// 	fmt.Printf("%.2f\n", ETC[i])
-	// }
-	// tasks := len(ETC)
-	// resources := len(ETC[0])
-	ETC := ETCgenerator(100, 10, "low", "low")
+	var newproblem = Problem{100, 0, 10}       // 512 tasks and 16 resources
+	ETC := ETCgenerator(100, 10, "low", "low") // need to be consistent, 100 and 10 up, 100 and 10 in this argument.
 	ETC1 := deepcopy(ETC)
-	// ETC2 := deepcopy(ETC)
-	// for i := 0; i < len(ETC); i++ {
-	// 	fmt.Printf("%.2f\n", ETC[i])
-	// }
-
-	// startminmax := time.Now()
-	// var emptyArr []indexValuePair
-	// var emptyArr1 []float64
-	// _, timespent := helper(ETC2, emptyArr, emptyArr1, "MIN-MIN-TASK")
-	// timeCost := float64(-1)
-	// for i := 0; i < len(timespent); i++ {
-	// 	if timespent[i] > timeCost {
-	// 		timeCost = timespent[i]
-	// 	}
-	// }
-	// elapsedminmax := time.Since(startminmax)
-	// fmt.Printf("%s%.2f\n", "The time cost by minmin task driven approach is: ", timeCost)
-	// fmt.Printf("time took by by minmin: %s\n", elapsedminmax)
-
-	// ------------------------------------------------------------------------------------------------------------
-	// ------------------------------------------------------------------------------------------------------------
-	// ------------------------------------------------------------------------------------------------------------
-	// ------------------------------------------------------------------------------------------------------------
-	// ------------------------------------------------------------------------------------------------------------
 
 	startpso := time.Now()
 	gbest, _ := pso(newproblem, ETC1, 500, 50, 1.796180, 1.796180, 0.729844, 0.995)
 	fmt.Printf("%s%.2f\n", "Cost token by pso is: ", gbest.cost)
 	elapsedpso := time.Since(startpso)
 	fmt.Printf("time took by pso: %s\n\n\n", elapsedpso)
-	// sol := generateRandomArr(0, 3, 4)
-	// fmt.Print(sol)
 
 }
